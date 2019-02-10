@@ -3,14 +3,16 @@ package us.mattgreen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Collections;
+//import java.util.Collections;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Main {
 
     private Scanner keyboard;
     private Cookbook cookbook;
-    private Object Collections;
+    //private Object Collections;
 
     public Main() {
         keyboard = new Scanner(System.in);
@@ -110,7 +112,7 @@ public class Main {
 
     private void doControlBreak() {
 
-        DecimalFormat df2 = new DecimalFormat(".##");
+        DecimalFormat df2 = new DecimalFormat(".0000");
         List<Meal> mealArrayList = new ArrayList<Meal>();
         MealType mealType;
         FileInput indata = new FileInput("meals_data.csv");
@@ -121,11 +123,16 @@ public class Main {
         int nbr = 0;
         double sum = 0;
         Integer max = Integer.MIN_VALUE;
+        double mean = 0;
+        double median = 0;
+        double pos1 = 0;
+        double pos2 = 0;
 
         // Print the heading line
-        System.out.println("MealType\tTotal\tMean\tMin\tMax\tMedian");
+        System.out.printf("%-15s %10s %12s %8s %10s %10s %n", "MealType", "Total", "Mean", "Min", "Max", "Median");
+        //System.out.println("MealType\tTotal\tMean\tMin\tMax\tMedian");
 
-        String currentMealType = "BREAKFAST";
+        String currentMealType = "dummy";
 
         // Read the file and load to mealArrayList
         while ((line = indata.fileReadLine()) != null) {
@@ -154,7 +161,7 @@ public class Main {
             nbr = Integer.parseInt(fields[2]);
         }
 
-        Collections.sort(mealArrayList);
+        //Collections.sort(mealArrayList);
         // This instantiates the arraylist which grabs calories for each mealtype
         ArrayList<Integer> breakfast = new ArrayList<>();
 
@@ -187,74 +194,77 @@ public class Main {
                     }
                 }
 
-                // Find the mean value
-                double mean = sum / count;
+                mean = sum / count;
+                Collections.sort(breakfast);
+                // Calculate median (middle number)
+                median = 0;
+                pos1 = Math.floor((breakfast.size() - 1.0) / 2.0);
+                pos2 = Math.ceil((breakfast.size() - 1.0) / 2.0);
+                if (breakfast.size() != 0) {
+                    if (pos1 == pos2) {
+                        median = breakfast.get((int) pos1);
+                    } else {
+                        median = (breakfast.get((int) pos1) + breakfast.get((int) pos2)) / 2.0;
+                    }
+                }
 
-                // Print the output
-                System.out.println(currentMealType + "  \t" + df2.format(sum) + "\t" + df2.format(mean) + "\t" + min + "\t" + max);
+                // Print the output but skip initial dummy value
+                if (!currentMealType.equals("dummy")) {
 
-                //System.out.println("Clearing array and Updating Meal type");
+                    System.out.printf("%-15s %10s %13s %7s %10s %10s %n", currentMealType, (int) sum, df2.format(mean), min, max, median);
+
+                }
+
+                //Clearing array and variables / Updating Meal type
                 breakfast.clear();
                 currentMealType = str.getMealType().toString();
                 sum = 0;
                 count = 0;
                 breakfast.add(str.getCalories());
             }
-
-            /*if (str.getMealType() == MealType.BREAKFAST) {
-             //System.out.println("My arraylist of meal objects (calories)" + str.getCalories());
-
-             breakfast.add(str.getCalories());
-             }
-
-             if (str.getMealType() == MealType.LUNCH) {
-             //System.out.println("My arraylist of meal objects (calories)" + str.getCalories());
-
-             lunch.add(str.getCalories());
-             }*/
         }
 
-        //Collections.sort(breakfast);
-        /*
-         System.out.println("Calories created for breakfast ");
-         for (int calorieElementInBreakfast : breakfast) {
-         System.out.println(calorieElementInBreakfast);
+        // Process the last mealtype
+        Collections.sort(breakfast);
+        //ArrayList.sort(breakfast;
+        count = 0;
+        sum = 0;
+        max = 0;
 
-         }
+        // Find max calorie value, count and total in arraylist
+        for (Integer number : breakfast) {
+            sum = sum + number;
+            count++;
+            if (number > max) {
+                max = number;
+            }
+        }
 
-         System.out.println("Calories created for lunch ");
-         for (int calorieElementInLunch : lunch) {
-         System.out.println(calorieElementInLunch);
-         }
+        // Find min calorie value in arraylist
+        Integer min = max;
+        for (Integer number : breakfast) {
+            if (number < min) {
+                min = number;
+            }
+        }
 
-         System.out.println("Breakfast size" + breakfast.size());
-         System.out.println("Lunch size" + lunch.size());
-         */
-        //System.out.println("Max is " + max);
-        //System.out.println("Min is " + min);
-        //System.out.println("Breakfast mean" + sum / count);
-        //for (int elem : breakfastArray) {
-        //    System.out.println("Calories " + elem);//do whatever with the element
-        //}
+        mean = sum / count;
 
-        /*System.out.println("");
-         for (Meal item : myList) {
-         if (item != null) {
-         System.out.println(item);
-         }
-         }*/
-        //iterate through the list - look at the name (breakfast, lunch) and grab the calories
-        //when name changes, do math on list of calories of group taken
-        //cookbook.printAllMeals();
-        /*ArrayList<Meal> myList = new ArrayList<Meal>();
-         FileInput indata = new FileInput("meals_data.csv");
+        // Calculate median (middle number)
+        median = 0;
+        pos1 = Math.floor((breakfast.size() - 1.0) / 2.0);
+        pos2 = Math.ceil((breakfast.size() - 1.0) / 2.0);
+        if (breakfast.size() != 0) {
+            if (pos1 == pos2) {
+                median = breakfast.get((int) pos1);
+            } else {
+                median = (breakfast.get((int) pos1) + breakfast.get((int) pos2)) / 2.0;
+            }
+        }
 
-         String line;
+        //System.out.println("Median: " + median);
+        System.out.printf("%-15s %10s %13s %7s %10s %10s %n", currentMealType, (int) sum, df2.format(mean), min, max, median);
+        //System.out.println(currentMealType + "    \t" + df2.format(sum) + "\t" + df2.format(mean) + "\t" + min + "\t" + max + "\t" + median);
 
-         System.out.println("Reading in meals information from file...");
-         while ((line = indata.fileReadLine()) != null) {
-         String[] fields = line.split(",");
-         myList.add(fields[0], fields[1], fields[2]);
-         }*/
     }
 }
