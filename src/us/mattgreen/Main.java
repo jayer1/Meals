@@ -118,7 +118,7 @@ public class Main {
         FileInput indata = new FileInput("meals_data.csv");
         String line;
         int i = 0;
-        int breakfastCount = 0;
+        int mealCount = 0;
         int count = 0;
         int nbr = 0;
         double sum = 0;
@@ -130,7 +130,6 @@ public class Main {
 
         // Print the heading line
         System.out.printf("%-15s %10s %12s %8s %10s %10s %n", "MealType", "Total", "Mean", "Min", "Max", "Median");
-        //System.out.println("MealType\tTotal\tMean\tMin\tMax\tMedian");
 
         String currentMealType = "dummy";
 
@@ -161,24 +160,21 @@ public class Main {
             nbr = Integer.parseInt(fields[2]);
         }
 
-        //Collections.sort(mealArrayList);
         // This instantiates the arraylist which grabs calories for each mealtype
-        ArrayList<Integer> breakfast = new ArrayList<>();
+        ArrayList<Integer> mealGroup = new ArrayList<>();
 
-        //System.out.println("Current meal type is " + currentMealType.toUpperCase());
         for (Meal str : mealArrayList) {
-            //System.out.println("Record meal type is " + str.getMealType());
+
             // If currentMealType value is same as next record, add the calories to arraylist
             if (currentMealType.toUpperCase().equals(str.getMealType().toString())) {
 
-                breakfast.add(str.getCalories());
+                mealGroup.add(str.getCalories());
 
             } else {
                 // If the currentMealType value is different than next record, do the calcs, display output and reset the arraylist
-                //System.out.println("Meal type is different - performing calculations");
 
                 // Find max calorie value, count and total in arraylist
-                for (Integer number : breakfast) {
+                for (Integer number : mealGroup) {
                     sum = sum + number;
                     count++;
                     if (number > max) {
@@ -188,23 +184,23 @@ public class Main {
 
                 // Find min calorie value in arraylist
                 Integer min = max;
-                for (Integer number : breakfast) {
+                for (Integer number : mealGroup) {
                     if (number < min) {
                         min = number;
                     }
                 }
 
                 mean = sum / count;
-                Collections.sort(breakfast);
+                Collections.sort(mealGroup);
                 // Calculate median (middle number)
                 median = 0;
-                pos1 = Math.floor((breakfast.size() - 1.0) / 2.0);
-                pos2 = Math.ceil((breakfast.size() - 1.0) / 2.0);
-                if (breakfast.size() != 0) {
+                pos1 = Math.floor((mealGroup.size() - 1.0) / 2.0);
+                pos2 = Math.ceil((mealGroup.size() - 1.0) / 2.0);
+                if (mealGroup.size() != 0) {
                     if (pos1 == pos2) {
-                        median = breakfast.get((int) pos1);
+                        median = mealGroup.get((int) pos1);
                     } else {
-                        median = (breakfast.get((int) pos1) + breakfast.get((int) pos2)) / 2.0;
+                        median = (mealGroup.get((int) pos1) + mealGroup.get((int) pos2)) / 2.0;
                     }
                 }
 
@@ -216,23 +212,23 @@ public class Main {
                 }
 
                 //Clearing array and variables / Updating Meal type
-                breakfast.clear();
+                mealGroup.clear();
                 currentMealType = str.getMealType().toString();
                 sum = 0;
                 count = 0;
-                breakfast.add(str.getCalories());
+                mealGroup.add(str.getCalories());
             }
         }
 
         // Process the last mealtype
-        Collections.sort(breakfast);
-        //ArrayList.sort(breakfast;
+        Collections.sort(mealGroup);
+        //ArrayList.sort(mealGroup;
         count = 0;
         sum = 0;
         max = 0;
 
         // Find max calorie value, count and total in arraylist
-        for (Integer number : breakfast) {
+        for (Integer number : mealGroup) {
             sum = sum + number;
             count++;
             if (number > max) {
@@ -242,7 +238,7 @@ public class Main {
 
         // Find min calorie value in arraylist
         Integer min = max;
-        for (Integer number : breakfast) {
+        for (Integer number : mealGroup) {
             if (number < min) {
                 min = number;
             }
@@ -252,19 +248,17 @@ public class Main {
 
         // Calculate median (middle number)
         median = 0;
-        pos1 = Math.floor((breakfast.size() - 1.0) / 2.0);
-        pos2 = Math.ceil((breakfast.size() - 1.0) / 2.0);
-        if (breakfast.size() != 0) {
+        pos1 = Math.floor((mealGroup.size() - 1.0) / 2.0);
+        pos2 = Math.ceil((mealGroup.size() - 1.0) / 2.0);
+        if (mealGroup.size() != 0) {
             if (pos1 == pos2) {
-                median = breakfast.get((int) pos1);
+                median = mealGroup.get((int) pos1);
             } else {
-                median = (breakfast.get((int) pos1) + breakfast.get((int) pos2)) / 2.0;
+                median = (mealGroup.get((int) pos1) + mealGroup.get((int) pos2)) / 2.0;
             }
         }
 
-        //System.out.println("Median: " + median);
         System.out.printf("%-15s %10s %13s %7s %10s %10s %n", currentMealType, (int) sum, df2.format(mean), min, max, median);
-        //System.out.println(currentMealType + "    \t" + df2.format(sum) + "\t" + df2.format(mean) + "\t" + min + "\t" + max + "\t" + median);
 
     }
 }
